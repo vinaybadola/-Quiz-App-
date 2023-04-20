@@ -47,7 +47,7 @@ class StudentController extends Controller
         $user_course = $user->course_id;
 
         $demo = Session::get('quiz_id');
-        $par = $demo->id;
+        $quiz_id = $demo->id;
 
         $option_id = $request->input('option_id');
         $question_id = $request->input('ques->id');
@@ -74,19 +74,22 @@ class StudentController extends Controller
         $store_quiz->selected_ans = $option_id;
         $store_quiz->isCorrect = $isCorrect;
         $store_quiz->question_id = $question_id;
-        $store_quiz->quiz_id = $par;
+        $store_quiz->quiz_id = $quiz_id;
         $store_quiz->save();
 
 
         if ($question_id != 0) {
             $set = QuizQuestionAttempt::get('question_id');
             $answer = QuizQuestion::where('course_id', $user_course)->whereNotIn('id', function ($q) {
-                $q->select('question_id')->from('quiz_question_attempts')->where('id', '!=', ' $set');
-            })
-             ->where('course_id','==',$user_course)
-            ->limit(1)->get();
+                $q->select('question_id')->from('quiz_question_attempts')->where('id', '!=', ' $set', function($q1){
+                    $q1->select('quiz_id')->from('quiz_question_attempts')->where('id', '!=', '$quiz_id');
+                });          
+            }) 
+             ->limit(1)->get();
             return view('question', ['display' => $answer]);
         }
+
+       
     }
 
     //!     Evaluating the User Question
