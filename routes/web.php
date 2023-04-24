@@ -18,7 +18,7 @@ Route::middleware(['guard'])->group(function(){
     Route::post("/status",[StudentController::class,'add']);
 
     Route::post("/eval",[StudentController::class,'evaluate'])->name('eval');
-      
+    
 
 });
 

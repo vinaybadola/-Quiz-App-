@@ -23,15 +23,17 @@
             <input type="radio" name="option_id" value="4"  >
             {{$ques->opt4}} <br>
            </div>
+           <input type="radio" name="option_id" value="0" checked="unchecked" hidden="">
            <input type="radio" name="{{$ques->id}}" value="0" checked="checked" hidden="">
   
       @endforeach
 
       <input type="submit" name="submit"  value="Next" class="btn btn-success">
       {{-- {{$display->links()}} --}}
+      <button type="reset">Clear Option </button>
   
     </form>
 
-
+    
   </body>
   </html>

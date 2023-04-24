@@ -79,10 +79,17 @@ class CustomAuthController extends Controller
     }
    
     public function dashboard(){
+        
+       // return Session()->forget('loginId');
+       //return Session::get('loginId');
 
+       
+        
         $user_id=Session::get('loginId');
         $user=User::find($user_id);
         $user_course=$user->course_id;
+
+        
         $course_name = Course::find($user_course);
         $data = array();
 
@@ -94,6 +101,9 @@ class CustomAuthController extends Controller
         
         return view('dashboard')->with('data',$data)->with('course',$course_name);
     }
+  
+    
+    
 
     public function showCourseName(){
         $user_id=Session::get('loginId');
