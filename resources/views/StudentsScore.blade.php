@@ -1,26 +1,4 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
 
-    <h1>Score Board </h1>
-@foreach($score as $sc){
-{{$sc->id}}		<br>	 
-{{$sc->result}} <br>
-{{$sc->correct}}	<br>
-{{$sc->Incorrect}}	<br>
-{{$sc->no_attempt}}	<br>
-}
-@endforeach
-
-
-</body>
-</html> --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,7 +35,7 @@
 						    
 							@foreach($ans as $sc)
 								<tr>
-									<td>{{$sc->name}}</td>
+							<td>{{$sc->user->name}}</td>
 							<td>{{$sc->user_id}}</td>
 							<td>{{$sc->result}}</td> 
 							<td>{{$sc->correct}}</td>
@@ -67,17 +45,9 @@
 							<td>{{$sc->created_at}}</td>
 						</tr>
 						
-						@endforeach
-                           
-					
+						@endforeach				
 					</tbody>
                 </table>
-				<br>
-				<br>
-			
-				<br>
-				<hr>
-				<br>
             </div>
         </div>
     </div>

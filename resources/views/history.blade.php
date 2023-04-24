@@ -9,22 +9,50 @@
 </head>
 <body>
     
-    <h2> Your Examination History </h2> <hr>
+    <marquee behavior="" direction=""><h2> Your Examination History </h2></marquee>
 
+
+    <table border="2px solid blue">
  
-    @foreach ($data as $item)
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Student ID </th>
+                <th> Result</th>
+                <th>Your Grade is</th>
+                <th>Correct_Answers</th>
+                <th>Incorrect_Answers</th>
+                <th>No_Attempt</th>
+                <th>Time</th>
+               
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($data as $item)
+                <tr>
+                    <td>{{$name->name}}</td>
+                    <td>{{$item->user_id}}</td>
+                    <td>{{$item->result}}</td>
+                    <td>{{$item->marks}}</td>
+                    <td>{{$item->correct}}</td>
+                    <td>{{$item->Incorrect}}</td>
+                    <td>{{$item->No_Attempt}}</td>
+                    <td>{{$item->created_at}}</td>
+                    
+                    
+                </tr>
+            
+            @endforeach
+        </tbody>
         
-   <center>
-   <b>UserID </b> : {{$item->user_id}} <br>
-   <b>  Result </b> : {{$item->result}} <br>
-   <b> Grade </b>  : {{$item->marks}} <br>
-   <b>Correct Answers</b>  : {{$item->correct}} <br>
-   <b>Incorrect Answers</b>  :  {{$item->Incorrect}} <br>
-   <b> No Attempts</b>  : {{$item->No_Attempt}} <br>
-   <b>Date/Time</b> : {{$item->created_at}} <br>
-    <br><br><br><hr>
-</center>
-    @endforeach
+    </table>
 
+
+    <br>
+    <div>
+        <a href="/dashboard">GO TO DASHBOARD</a>
+    </div>
+    
 </body>
 </html>

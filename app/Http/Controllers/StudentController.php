@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\StudentQuiz;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -18,20 +18,29 @@ class StudentController extends Controller
     {
 
         $user_id = Session::get('loginId');
-        $user = User::find($user_id);
-        $user_course = $user->course_id;
-
-
+       
+       
 
         $store = new StudentQuiz();
         $store->marks = "";
         $store->user_id = $user_id;
         $store->total_attempt = 0;
         $store->save();
+
         $stu = StudentQuiz::get('id')->last();
         Session::put('quiz_id', $stu);
+        //return $stu;
 
-        $students = QuizQuestion::where('course_id', $user_course)->limit(1)->get();
+
+        $demo = Session::get('quiz_id');
+        $quiz_id = $demo->id;
+        //return $quiz_id;
+
+      
+        
+
+       // $students = QuizQuestion::where('course_id', $user_course)->limit(1)->get();
+         $students= $this->fetch_question($quiz_id);
         return view('question', ['display' => $students]);
     }
 
@@ -42,32 +51,48 @@ class StudentController extends Controller
     public function add(Request $request)
     {
 
+        $isCorrect= false;
         $user_id = Session::get('loginId');
         $user = User::find($user_id);
         $user_course = $user->course_id;
+        //return $user_course;
 
         $demo = Session::get('quiz_id');
         $quiz_id = $demo->id;
+        //return $quiz_id;
 
         $option_id = $request->input('option_id');
+        //return $option_id;
         $question_id = $request->input('ques->id');
+        //return $question_id;
 
-        if ($question_id == 0) {
-            return view('submit');
-        }
+    //   $answer = QuizQuestion::where('course_id', $user_course)->pluck('answer');
+        
+    //   foreach($answer as $ans){
+    //      echo  $ans . '<br>';
+    //   }
+
+      //echo  $res;
+       // return $answer;
+
+        // foreach ($answer as $ans) {
+        //     if ($ans->answer == $option_id) {
+        //         $isCorrect = true;
+        //     } elseif ($option_id == 0) {
+        //         $isCorrect = false;
+        //     } else {
+        //         $isCorrect = false;
+        //     }
+        // }
 
 
-        $answer = QuizQuestion::where('course_id', $user_course)->get();
+        // if($answer == $option_id){
+        //   $isCorrect = 1;
+        // }
 
-        foreach ($answer as $ans) {
-            if ($ans->answer == $option_id) {
-                $isCorrect = true;
-            } elseif ($option_id == 0) {
-                $isCorrect = false;
-            } else {
-                $isCorrect = false;
-            }
-        }
+        // return $isCorrect;
+
+        
 
 
         $store_quiz = new QuizQuestionAttempt();
@@ -78,18 +103,40 @@ class StudentController extends Controller
         $store_quiz->save();
 
 
-        if ($question_id != 0) {
-            $set = QuizQuestionAttempt::get('question_id');
-            $answer = QuizQuestion::where('course_id', $user_course)->whereNotIn('id', function ($q) {
-                $q->select('question_id')->from('quiz_question_attempts')->where('id', '!=', ' $set', function($q1){
-                    $q1->select('quiz_id')->from('quiz_question_attempts')->where('id', '!=', '$quiz_id');
-                });          
-            }) 
-             ->limit(1)->get();
-            return view('question', ['display' => $answer]);
-        }
+     
+           
 
+
+            $answers=$this->fetch_question($quiz_id);
+            if(count( $answers)>0)
+            {
+                return view('question', ['display' => $answers]);
+            }
+            else
+            {
+                
+                return  view('submit');
+            }
+
+            
+
+
+                    
        
+    }
+    
+
+    public function fetch_question($quiz_id)
+    {
+        $user_id = Session::get('loginId');
+        $user = User::find($user_id);
+        $user_course = $user->course_id;
+
+        $answer=QuizQuestion::where('course_id', $user_course)->whereNotIn('id',function($q)use($quiz_id){
+            $q->select('question_id')->from('quiz_question_attempts')->where('quiz_id',$quiz_id);
+        })->limit(1)->get();
+
+        return $answer;
     }
 
     //!     Evaluating the User Question
@@ -104,38 +151,42 @@ class StudentController extends Controller
         $user_course = $user->course_id;
 
         $demo = Session::get('quiz_id')->id;
-        $help = QuizQuestionAttempt::all();
-
-        foreach ($help as $item) {
-            $hp = $item->selected_ans;
-        }
+       
 
 
+            $response = DB::table('quiz_question_attempts')
+                        ->join('quiz_questions', 'quiz_question_attempts.question_id', '=', 'quiz_questions.id')
+                        ->where('quiz_question_attempts.quiz_id', $demo)
+                        ->select('quiz_question_attempts.selected_ans', 'quiz_questions.answer')
+                        
+                        ->get();
 
-        $correct = 0;
-        $result = 0;
-        $incorrect = 0;
-        $no_attempt = 0;
-        $grade = "";
-        $answer = QuizQuestion::where('course_id', $user_course)->get();
-
-
-
-        foreach ($answer as $ans) {
-            if ($ans->answer == $hp) {
+            // return $response;
+            $correct = 0;
+            $no_attempt= 0;
+            $incorrect = 0;
+            $no_attempt= 0;
+            $result = 0;
+            foreach ($response as $resp){
+               if($resp->selected_ans == $resp->answer){
                 $correct++;
-            } elseif ($hp == 0) {
+               }
+           
+               else if($resp->selected_ans == 0){
                 $no_attempt++;
-            } else {
-                $incorrect++;
+               }
+               else{
+                  $incorrect++;
+               }
+
             }
-        }
-        $result  = ($correct * 2);
-        if ($result > 2) {
+
+         $result  = ($correct * 2);
+          if ($result > 2) {
             $grade = "Pass";
-        } else {
+         } else {
             $grade = "Fail";
-        }
+         }
 
 
         $store_quiz = new QuizResult();
@@ -205,10 +256,15 @@ class StudentController extends Controller
 
 
         $ans = QuizResult::all()->sortByDesc('result');
-        return view("StudentsScore", compact('ans'));
+       // return view("StudentsScore", compact('ans'));
         // return $ans;
 
+        $name = QuizResult::with('user')->get();
+        // return view('StudentsScore', ['name'=> $name]);
+        
+       
+      
 
-        return view('StudentsScore')->with('ans', $ans);
+        return view('StudentsScore')->with('ans', $ans)->with('ans', $name);
     }
 }
