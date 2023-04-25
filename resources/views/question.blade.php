@@ -7,6 +7,7 @@
     <title>Document</title>
   </head>
   <body>
+    <center>
     <form action="{{url('/status')}}" method="POST">
       {{csrf_field()}}
       @foreach($display as $ques)
@@ -33,6 +34,7 @@
       <button type="reset">Clear Option </button>
   
     </form>
+  </center>
 
     
   </body>

@@ -29,7 +29,7 @@ class CustomAuthController extends Controller
             'name'=>'required',
             'email'=>'required |email|unique:users',
             'password'=>'required|min:4|max:12',
-            'contact'=>'required | min:5 | max:13',
+            'contact'=>'required | min:5 | max:12',
             
             
         ]);
