@@ -13,5 +13,9 @@ class User extends Model
         return $this->belongsTo(User::class);
     }
 
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
    
 }

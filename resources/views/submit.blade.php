@@ -7,12 +7,14 @@
   <title>Document</title>
 </head>
 <body>
-
+ 
+  <center>
   <form action="{{url('/eval')}}" method="POST">
     @csrf
     <h1>TEST OVER </h1>
     <input type="submit" value="submit" name="submit">
   </form>
+</center>
   
 </body>
 </html>

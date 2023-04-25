@@ -19,7 +19,7 @@
                 {{Session::get('fail')}}
             @endif
             <div>
-                <input type="text" name="name" placeholder="Enter your name" value="{{old('name')}}"><br>
+                <input type="text"  max="15" name="name" placeholder="Enter your name" value="{{old('name')}}"><br>
                 <span>@error('name'){{$message}}@enderror</span>
             </div>
             <br>
@@ -34,7 +34,7 @@
             </div>
             <br>
             <div>
-                <input type="mobile" name="contact" placeholder="Enter your contact" value="{{old('contact')}}"><br>
+                <input type="mobile" max="10" name="contact" placeholder="Enter your contact" value="{{old('contact')}}"><br>
                 <span>@error('contact'){{$message}}@enderror</span>
             </div>
             <br>

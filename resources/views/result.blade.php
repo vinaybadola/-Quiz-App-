@@ -46,6 +46,7 @@
 				<hr>
 				<br>
 				<a href="/dashboard">Go to DashBoard</a>
+				<center> <a href="{{url("cross")}}">Cross Check</a> </center>
             </div>
         </div>
     </div>
@@ -55,53 +56,3 @@
 </body>
 </html>
 
-{{-- 
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-offset-2 col-lg-8">
-				<h1 align="center">Your Result</h1>
-				<br>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Total number of qustions</th>
-							<th>Correct Answers</th>
-							<th>Incorrect Answers</th>
-							<th>No attempt</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-						
-							<td>{{$result['correct']}}</td>
-							<td>{{$result['incorrect']}}</td>
-							<td>{{$result['no_attempt']}}</td>
-						</tr>
-					</tbody>
-                </table>
-				<br>
-				<br>
-				<h4 align="center">Your Score</h4>
-				<p align="center">{{$result['result']}}</p>
-				<br>
-				<hr>
-				<br>
-            </div>
-        </div>
-    </div> --}}
-    
-				
-
-{{-- @foreach($score as $scoreCard){
-
-			 
-{{$scoreCard->grade}}	
-{{$scoreCard->correct}}	
-{{$scoreCard->incorrect}}	
-{{$scoreCard->no_attempt}}	
-
-
-}
-@endforeach --}}
-
-{{-- {{$score->correct}} --}}

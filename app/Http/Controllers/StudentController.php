@@ -66,35 +66,6 @@ class StudentController extends Controller
         $question_id = $request->input('ques->id');
         //return $question_id;
 
-    //   $answer = QuizQuestion::where('course_id', $user_course)->pluck('answer');
-        
-    //   foreach($answer as $ans){
-    //      echo  $ans . '<br>';
-    //   }
-
-      //echo  $res;
-       // return $answer;
-
-        // foreach ($answer as $ans) {
-        //     if ($ans->answer == $option_id) {
-        //         $isCorrect = true;
-        //     } elseif ($option_id == 0) {
-        //         $isCorrect = false;
-        //     } else {
-        //         $isCorrect = false;
-        //     }
-        // }
-
-
-        // if($answer == $option_id){
-        //   $isCorrect = 1;
-        // }
-
-        // return $isCorrect;
-
-        
-
-
         $store_quiz = new QuizQuestionAttempt();
         $store_quiz->selected_ans = $option_id;
         $store_quiz->isCorrect = $isCorrect;
@@ -116,16 +87,12 @@ class StudentController extends Controller
             {
                 
                 return  view('submit');
-            }
-
-            
-
-
-                    
+            }  
        
     }
     
 
+    //?     Displaying the Different Questions and same question for same and different user
     public function fetch_question($quiz_id)
     {
         $user_id = Session::get('loginId');
@@ -139,13 +106,36 @@ class StudentController extends Controller
         return $answer;
     }
 
+
+    //?  CrossCheck the Answer
+    public function CrossCheck(){
+
+        $quiz_id = Session::get('quiz_id')->id;  
+      
+
+        $response = DB::table('quiz_question_attempts')
+                  ->join('quiz_questions', 'quiz_question_attempts.question_id', '=','quiz_questions.id')
+                  ->where('quiz_question_attempts.quiz_id', $quiz_id)
+                  ->whereRaw('quiz_question_attempts.selected_ans = quiz_questions.answer')
+                  ->update(['quiz_question_attempts.isCorrect'=> true]);
+
+               // return "Update Successfully";
+
+           $result=DB::table('quiz_question_attempts')
+           ->join('quiz_questions','quiz_question_attempts.question_id','=','quiz_questions.id')
+           ->select('quiz_question_attempts.selected_ans','quiz_question_attempts.isCorrect','quiz_questions.answer','quiz_questions.question_name')
+           ->where('quiz_question_attempts.quiz_id','=', $quiz_id )
+           ->get();
+
+             //return $result;
+
+       
+      return view('crosscheck', ['result'=> $result]);
+                            
+    }
     //!     Evaluating the User Question
     public function evaluate(Request $request)
     {
-
-
-
-
         $user_id = Session::get('loginId');
         $user = User::find($user_id);
         $user_course = $user->course_id;
@@ -188,7 +178,6 @@ class StudentController extends Controller
             $grade = "Fail";
          }
 
-
         $store_quiz = new QuizResult();
         $store_quiz->result = $result;
         $store_quiz->marks = $grade;
@@ -209,12 +198,8 @@ class StudentController extends Controller
         $updt->marks = $grade;
         $updt->save();
 
-
-
-
-
+        
         $score = [];
-
         $score['result'] = $result;
         $score['marks'] = $grade;
         $score['correct'] = $correct;
@@ -235,17 +220,11 @@ class StudentController extends Controller
     {
 
         $user_id = Session::get('loginId');
-
         $user_name = User::find($user_id);
-
-
-
         $data = array();
         if (Session::has('loginId')) {
             $data = QuizResult::where('user_id', '=', Session::get('loginId'))->get();
         }
-        // return $data;
-        // return $user_name;
         return view("history")->with('data', $data)->with('name', $user_name);
     }
 
@@ -254,17 +233,8 @@ class StudentController extends Controller
     public function showResult()
     {
 
-
         $ans = QuizResult::all()->sortByDesc('result');
-       // return view("StudentsScore", compact('ans'));
-        // return $ans;
-
         $name = QuizResult::with('user')->get();
-        // return view('StudentsScore', ['name'=> $name]);
-        
-       
-      
-
         return view('StudentsScore')->with('ans', $ans)->with('ans', $name);
     }
 }
