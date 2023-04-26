@@ -46,7 +46,7 @@
 				<hr>
 				<br>
 				<a href="/dashboard">Go to DashBoard</a>
-				<center> <a href="{{url("cross")}}">Cross Check</a> </center>
+				<center> <a href="cross-check">Cross Check</a> </center>
             </div>
         </div>
     </div>

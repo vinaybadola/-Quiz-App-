@@ -19,13 +19,13 @@ Route::middleware(['guard'])->group(function(){
 
     Route::post("/eval",[StudentController::class,'evaluate'])->name('eval');
 
-    Route::get("/cross-check", [StudentController::class , 'CrossCheck'])->name('cross');
+    Route::get("/cross-check", [StudentController::class , 'CrossCheck']);
     
     
 
 });
 
-Route::get("/admin-pannel", [AdminController::class , 'Admin']);
+
 
 Route::get('/', function () {return view('welcome');});
 Route::get("/registration",[CustomAuthController::class,'registration']);
